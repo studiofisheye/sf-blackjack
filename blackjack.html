@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Black Jack</title>
+</head>
+<body>
+    <button id="shuffle">New Game</button>
+    <button id="deal">Deal</button>
+    <button id="stay">Stay</button>
+    <button id="hit">Hit</button>
+    <h2 id="winner"></h2>
+    <h2 id="loser"></h2>
+    <h2 id="tie"></h2>
+    <script>
+        let cardDeck = makeDeck();
+        console.log(cardDeck);
+        let playerCards = [];
+        let houseCards = [];
+
+        document.querySelector("#deal").addEventListener("click", function(e) {
+            for (let i = 0; i < 2; i++) {
+                playerCards.push(deal(cardDeck));
+                console.log("Player: " + playerCards);
+                houseCards.push(deal(cardDeck));
+                console.log("House: " + houseCards);
+            }
+
+            // Player gets two cards
+            //playerCards.push(deal(cardDeck));
+            //// House gets two cards
+            //houseCards.push(deal(cardDeck));
+            //// Player stays or hits
+            //playerCards.push(deal(cardDeck));
+            //// House gets a card
+            //houseCards.push(deal(cardDeck));
+            console.log("Player's cards:");
+            console.log(playerCards);
+            console.log("House cards:");
+            console.log(houseCards);
+        });
+        document.querySelector("#hit").addEventListener("click", function(e){
+
+        });
+        
+        document.querySelector("#stay").addEventListener("click", function(e) {
+            var newDeal = deal(cardDeck);
+        });
+        
+        document.querySelector("#shuffle").addEventListener("click", function(e) {
+            shuffleDeck(cardDeck);
+        });
+
+        function makeDeck() {
+            const cardSuit = ["hearts", "clubs", "spades", "diamonds"];
+            const cardValue = [
+                {"card": "A", "value": 11}, 
+                {"card": "1", "value": 1}, 
+                {"card": "2", "value": 2}, 
+                {"card": "3", "value": 3}, 
+                {"card": "4", "value": 4}, 
+                {"card": "5", "value": 5}, 
+                {"card": "6", "value": 6}, 
+                {"card": "7", "value": 7}, 
+                {"card": "8", "value": 8},
+                {"card": "9", "value": 9},                
+                {"card": "J", "value": 10},
+                {"card": "Q", "value": 10},
+                {"card": "K", "value": 10}];
+
+            var deck = new Array();
+            for (var i=0; i < cardSuit.length; i++) {
+                for(var x=0; x < cardValue.length; x++) {
+                    var card = {
+                        Value: cardValue[x], 
+                        Suits: cardSuit[i]
+                    };
+                    deck.push(card);
+                }
+            }
+
+            return deck;
+        }
+        
+        function shuffleDeck(cardDeck) {
+            let cardCount = cardDeck.length - 1;
+            for (let i = cardCount; i > 0; i--) {
+                const j = Math.floor(Math.random() * i)
+                const temp = cardDeck[i]
+                cardDeck[i] = cardDeck[j]
+                cardDeck[j] = temp
+            }
+            //console.log(cardDeck);
+        }
+        //let[{value: 2}, {value: 4}]; 
+
+        //function addHand(hand){
+           // let total: number = 0;
+          //  for(let i=0; <x.length; i++){
+          //      total += hand[i].value
+          //  }
+          //  return total;
+       // }
+
+        function deal(cardDeck) {
+    
+           // console.log(cardDeck.pop());
+           // console.log(cardDeck);
+            return cardDeck.pop();
+        }
+
+        function determineWinner() {
+            // Some comparison on between the players cards and the house cards
+            // Whoever has the highest card value between the two cards closest 21
+            var winnerDisplay = document.querySelector("#winner").innerText = "House Wins!";
+            var loserDisplay = document.querySelector("#loser").innerText = "House Loses!";
+            
+        }
+    </script>
+    
+</body>
+</html>
