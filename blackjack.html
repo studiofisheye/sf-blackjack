@@ -6,16 +6,44 @@
     <title>Black Jack</title>
 </head>
 <body>
-    <button id="new-game">New Game</button>
-    <button id="stay">Stay</button>
-    <button id="hit">Hit</button>
-    <h2 id="gameOverResults"></h2>
+    <div id="form-section">
+        <form>
+            <input name="name" placeholder="Enter name.">
+            <input name="bday" placeholder="Enter birthday (mm-dd-yyyy)">
+            <button id="player-entry">Submit</button>
+            <div>
+                <p id="player-entry-message"></p>
+            </div>
+        </form>
+    </div>
+    <div id="game-section" style="display:none;">
+        <button id="new-game">New Game</button>
+        <button id="stay">Stay</button>
+        <button id="hit">Hit</button>
+        <h2 id="gameOverResults"></h2>
+    </div>
     <script>
         let cardDeck = [];
         let playerCards = [];
         let houseCards = [];
         let playerScore = 0;
         let houseScore = 0;
+
+        document.querySelector("#player-entry").addEventListener("click", function(e) {
+            // Process the players information
+            const pem = document.getElementById("player-entry-message");
+            const ageField = document.querySelector("input[name=bday]");
+            const nameField = document.querySelector("input[name=name");
+
+            if (calculate_age(new Date(ageField.value)) < 21) {
+                pem.innerText = "You must be 21 and older to play this game.";
+            } else {
+                document.getElementById("game-section").style.display = "block";
+                document.getElementById("form-section").style.display = "none";
+            }
+
+            e.preventDefault();
+        })
 
         document.querySelector("#hit").addEventListener("click", function(e) {
             playerCards = playerCards.concat(deal(1));
@@ -141,6 +169,14 @@
                 houseCards = houseCards.concat(deal(1));
                 houseScore = calculateScore(houseCards);
             }
+        }
+
+        // Found on https://www.w3resource.com/javascript-exercises/javascript-date-exercise-18.php
+        function calculate_age(dob) { 
+            var diff_ms = Date.now() - dob.getTime();
+            var age_dt = new Date(diff_ms); 
+        
+            return Math.abs(age_dt.getUTCFullYear() - 1970);
         }
     </script>
     
