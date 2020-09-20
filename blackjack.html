@@ -6,74 +6,81 @@
     <title>Black Jack</title>
 </head>
 <body>
-    <button id="shuffle">New Game</button>
-    <button id="deal">Deal</button>
+    <button id="new-game">New Game</button>
     <button id="stay">Stay</button>
     <button id="hit">Hit</button>
-    <h2 id="winner"></h2>
-    <h2 id="loser"></h2>
-    <h2 id="tie"></h2>
+    <h2 id="gameOverResults"></h2>
     <script>
-        let cardDeck = makeDeck();
-        console.log(cardDeck);
+        let cardDeck = [];
         let playerCards = [];
         let houseCards = [];
+        let playerScore = 0;
+        let houseScore = 0;
 
-        document.querySelector("#deal").addEventListener("click", function(e) {
-            for (let i = 0; i < 2; i++) {
-                playerCards.push(deal(cardDeck));
-                console.log("Player: " + playerCards);
-                houseCards.push(deal(cardDeck));
-                console.log("House: " + houseCards);
-            }
+        document.querySelector("#hit").addEventListener("click", function(e) {
+            playerCards = playerCards.concat(deal(1));
+            playerScore = calculateScore(playerCards);
+            console.log(playerCards);
+            console.log(playerScore);
+            console.log(houseScore);
+        });
+        
+        document.querySelector("#stay").addEventListener("click", function(e) {
+            // Houses turn
+            housePlay();
+            determineWinner();
+        });
+        
+        document.querySelector("#new-game").addEventListener("click", function(e) {
+            // Make/shuffle the deck
+            cardDeck = makeDeck();
+            shuffleDeck();
+            console.log(cardDeck);
 
-            // Player gets two cards
-            //playerCards.push(deal(cardDeck));
-            //// House gets two cards
-            //houseCards.push(deal(cardDeck));
-            //// Player stays or hits
-            //playerCards.push(deal(cardDeck));
-            //// House gets a card
-            //houseCards.push(deal(cardDeck));
+            // Reset the board
+            playerCards = [];
+            houseCards = [];
+            playerScore = 0;
+            houseScore = 0;
+            document.querySelector("#gameOverResults").innerText = "";
+
+            // Deal the initial cards to player and house
+            playerCards = playerCards.concat(deal(2));
+            houseCards = houseCards.concat(deal(2));
             console.log("Player's cards:");
             console.log(playerCards);
             console.log("House cards:");
             console.log(houseCards);
-        });
-        document.querySelector("#hit").addEventListener("click", function(e){
 
-        });
-        
-        document.querySelector("#stay").addEventListener("click", function(e) {
-            var newDeal = deal(cardDeck);
-        });
-        
-        document.querySelector("#shuffle").addEventListener("click", function(e) {
-            shuffleDeck(cardDeck);
+            // Calculate current score of each player and the house
+            playerScore = calculateScore(playerCards);
+            houseScore = calculateScore(houseCards);
+            console.log("Player score: " + playerScore);
+            console.log("House score: " + houseScore);
         });
 
         function makeDeck() {
-            const cardSuit = ["hearts", "clubs", "spades", "diamonds"];
+            const cardSuit = ["Hearts", "Clubs", "Spades", "Diamonds"];
             const cardValue = [
-                {"card": "A", "value": 11}, 
-                {"card": "1", "value": 1}, 
-                {"card": "2", "value": 2}, 
-                {"card": "3", "value": 3}, 
-                {"card": "4", "value": 4}, 
-                {"card": "5", "value": 5}, 
-                {"card": "6", "value": 6}, 
-                {"card": "7", "value": 7}, 
-                {"card": "8", "value": 8},
-                {"card": "9", "value": 9},                
-                {"card": "J", "value": 10},
-                {"card": "Q", "value": 10},
-                {"card": "K", "value": 10}];
+                {"card": "Ace", "value": 11}, 
+                {"card": "One", "value": 1}, 
+                {"card": "Two", "value": 2}, 
+                {"card": "Three", "value": 3}, 
+                {"card": "Four", "value": 4}, 
+                {"card": "Five", "value": 5}, 
+                {"card": "Six", "value": 6}, 
+                {"card": "Seven", "value": 7}, 
+                {"card": "Eight", "value": 8},
+                {"card": "Nine", "value": 9},                
+                {"card": "Jack", "value": 10},
+                {"card": "Queen", "value": 10},
+                {"card": "King", "value": 10}];
 
             var deck = new Array();
             for (var i=0; i < cardSuit.length; i++) {
                 for(var x=0; x < cardValue.length; x++) {
                     var card = {
-                        Value: cardValue[x], 
+                        Face: cardValue[x], 
                         Suits: cardSuit[i]
                     };
                     deck.push(card);
@@ -83,7 +90,7 @@
             return deck;
         }
         
-        function shuffleDeck(cardDeck) {
+        function shuffleDeck() {
             let cardCount = cardDeck.length - 1;
             for (let i = cardCount; i > 0; i--) {
                 const j = Math.floor(Math.random() * i)
@@ -91,31 +98,49 @@
                 cardDeck[i] = cardDeck[j]
                 cardDeck[j] = temp
             }
-            //console.log(cardDeck);
         }
-        //let[{value: 2}, {value: 4}]; 
 
-        //function addHand(hand){
-           // let total: number = 0;
-          //  for(let i=0; <x.length; i++){
-          //      total += hand[i].value
-          //  }
-          //  return total;
-       // }
+        function deal(dealCount) {
+            let cardDeal = [];
+            for (let i = 0; i < dealCount; i++) {
+                cardDeal.push(cardDeck.pop());
+            }
 
-        function deal(cardDeck) {
-    
-           // console.log(cardDeck.pop());
-           // console.log(cardDeck);
-            return cardDeck.pop();
+            return cardDeal;
         }
 
         function determineWinner() {
             // Some comparison on between the players cards and the house cards
             // Whoever has the highest card value between the two cards closest 21
-            var winnerDisplay = document.querySelector("#winner").innerText = "House Wins!";
-            var loserDisplay = document.querySelector("#loser").innerText = "House Loses!";
-            
+            //var winnerDisplay = document.querySelector("#winner").innerText = "House Wins!";
+            //var loserDisplay = document.querySelector("#loser").innerText = "House Loses!";
+            if (playerScore < houseScore && houseScore <= 21) {
+                document.querySelector("#gameOverResults").innerText = "House Wins!";
+            } else if (playerScore < houseScore && houseScore > 21) {
+                document.querySelector("#gameOverResults").innerText = "Player Wins!";
+            } else if (playerScore > houseScore && playerScore <= 21) {
+                document.querySelector("#gameOverResults").innerText = "Player Wins!";
+            } else if (playerScore > houseScore && playerScore > 21) {
+                document.querySelector("#gameOverResults").innerText = "House Wins!";
+            } else if (playerScore === houseScore) {
+                document.querySelector("#gameOverResults").innerText = "It's a tie!";
+            }
+        }
+
+        function calculateScore(playerHand) {
+            var score = 0;
+            for (let i = 0; i < playerHand.length; i++) {
+                score += playerHand[i].Face.value;
+            }
+
+            return score;
+        }
+
+        function housePlay() {
+            if (houseScore <= 17) {
+                houseCards = houseCards.concat(deal(1));
+                houseScore = calculateScore(houseCards);
+            }
         }
     </script>
     
